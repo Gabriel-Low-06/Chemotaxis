@@ -1,6 +1,7 @@
 body {
-    background-color: rgb(200,200,200);
-    color: rgb(0,0,0);
+background-image: url('cellsimage.jpg'); 
+background-size:cover;
+color: rgb(0,0,0);
     font-family: "Open Sans", sans-serif;
     text-align: left;
 }
