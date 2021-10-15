@@ -1,6 +1,14 @@
+boolean started=false;
+int myX = 550;
+int myY = 350;
+int score = 0;
+float myoldR = 0;
+float mynewR = 0;
+float myV = 0;
 class Cell{
   int x,y,t, infected;
   float xv, yv, s;
+  boolean alive;
   Cell(int ax, int ay, int as){
     x=ax;
     y=ay;
@@ -9,10 +17,13 @@ class Cell{
     infected = 0;
     xv=random(-1,1);
     yv=random(-1,1);
+    alive=true;
   }
   void show(){
-    noStroke();
-     
+    if(infected==0){
+      score+=1;
+    }
+    noStroke();  
     fill(0,infected,t-infected,99);
     if(s<200){
     ellipse(x,y,s,s);
@@ -41,6 +52,7 @@ class Cell{
        cells[j].t=t;
        cells[j].s=90;
        cells[j].infected=infected;
+       cells[j].alive=alive;
       }
     }
   }
@@ -64,8 +76,13 @@ class Cell{
   if(abs(yv)>5){
     yv*=.3;
   }
-  if(mousePressed==true && mouseX>(x-(s/2)) && mouseX<(x+(s/2)) && mouseY>(y-(s/2)) && mouseY<(y+(s/2))){
+  if(myX>(x-(s/2)) && myX<(x+(s/2)) && myY>(y-(s/2)) && myY<(y+(s/2)) && abs(myV)>1){
+    //infected=150;
+    alive=false;
+  }
+  if(millis()>3000 && started==false && random(1,50)>48){
     infected=150;
+    started=true;
   }
 }
 }
@@ -88,10 +105,33 @@ void setup(){
 
 void draw(){
   background(80,80,250);
+  score=0;
  for(int i=0; i<80; i++){
+   if(cells[i].alive==true){
     cells[i].show();
     cells[i].move();
+   }  
   }
-  
+  if(keyPressed){
+   if(keyCode==RIGHT){ mynewR+=.1; } 
+   if(keyCode==LEFT){mynewR-=.1;}
+   if(keyCode==UP){myV+=.3;myoldR=mynewR;}  
+  }else{
+    myV=myV*0.98;
+  }
+  myX+=(int)(cos(myoldR)*myV);
+  myY+=(int)(sin(myoldR)*myV);
+  myX=constrain(myX,50,1050);
+  myY=constrain(myY,50,650);
+  fill(300,300,300);
+  pushMatrix();
+  translate(myX+40,myY);
+  rotate(mynewR);
+  triangle(40,0,-40,20,-40,-20);  
+  translate(-myX-40,-myY);
+  popMatrix();
+  textSize(100);
+  text(score,990,75);
 }
+
 
