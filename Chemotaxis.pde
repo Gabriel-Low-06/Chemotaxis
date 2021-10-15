@@ -1,44 +1,46 @@
 boolean started=false;
 int myX = 550;
 int myY = 350;
-int score = 0;
+float score = 0;
+float allcount=1;
 float myoldR = 0;
 float mynewR = 0;
+float myRV = 0;
 float myV = 0;
 class Cell{
-  int x,y,t, infected;
+  int x,y,tint;
   float xv, yv, s;
-  boolean alive;
+  boolean alive, infected;
   Cell(int ax, int ay, int as){
     x=ax;
     y=ay;
     s=as;
-    t=(int)random(100,300);
-    infected = 0;
+    tint=color(0,0,(int)random(100,300));
     xv=random(-1,1);
     yv=random(-1,1);
     alive=true;
+    infected=false;
   }
   void show(){
-    if(infected==0){
+    if(infected==false){
       score+=1;
     }
     noStroke();  
-    fill(0,infected,t-infected,99);
+    fill(tint,99);
     if(s<200){
     ellipse(x,y,s,s);
-    fill(0,infected,t/2,99);
+    fill(0,0,100,99);
     ellipse(x,y,s/2.3,s/2.3);
-    if(infected==0){
+    if(infected==false){
     s+=.05;
     }else{
       s+=2;
     }
     }else{
-      fill(0,infected,t-infected);
+      fill(tint);
       ellipse(x-(s-200),y,200-(s-200),200-(s-200));
       ellipse(x+(s-200),y,200-(s-200),200-(s-200)); 
-      fill(0,infected,t/2);
+      fill(0,0,100);
      ellipse(x-(s-200),y,(200-(s-200))/2,(200-(s-200))/2);
      ellipse(x+(s-200),y,(200-(s-200))/2,(200-(s-200))/2);     
       s+=1;
@@ -49,7 +51,7 @@ class Cell{
        int j = (int)(random(0,80));
        cells[j].x=x-200;
        cells[j].y=y;
-       cells[j].t=t;
+       cells[j].tint=tint;
        cells[j].s=90;
        cells[j].infected=infected;
        cells[j].alive=alive;
@@ -79,9 +81,14 @@ class Cell{
   if(myX>(x-(s/2)) && myX<(x+(s/2)) && myY>(y-(s/2)) && myY<(y+(s/2)) && abs(myV)>1){
     //infected=150;
     alive=false;
+    noFill();
+    strokeWeight(5);
+    stroke(300,300,300);
+    ellipse(x,y,250,250);
   }
   if(millis()>3000 && started==false && random(1,50)>48){
-    infected=150;
+    infected=true;
+    tint=color(200,0,50);
     started=true;
   }
 }
@@ -104,34 +111,46 @@ void setup(){
 }
 
 void draw(){
-  background(80,80,250);
+  background((allcount-score)*6,0,(score/allcount)*200);
   score=0;
+  allcount=0;
  for(int i=0; i<80; i++){
    if(cells[i].alive==true){
     cells[i].show();
     cells[i].move();
+    allcount+=1;
    }  
   }
   if(keyPressed){
-   if(keyCode==RIGHT){ mynewR+=.1; } 
-   if(keyCode==LEFT){mynewR-=.1;}
-   if(keyCode==UP){myV+=.3;myoldR=mynewR;}  
+   if(keyCode==RIGHT){ myRV+=.01; } 
+   if(keyCode==LEFT){myRV-=.01;}
+   if(keyCode==UP){
+     myV+=.3;
+    if(myV<10){
+          myoldR=mynewR;
+    }
+   }
   }else{
-    myV=myV*0.98;
+    myV=myV*0.99;
+    myRV*=.97;
   }
+  myRV=constrain(myRV,-.1,.1);
+  mynewR+=myRV;
   myX+=(int)(cos(myoldR)*myV);
   myY+=(int)(sin(myoldR)*myV);
+  myV=constrain(myV,-10,10);
   myX=constrain(myX,50,1050);
   myY=constrain(myY,50,650);
   fill(300,300,300);
   pushMatrix();
-  translate(myX+40,myY);
+  translate(myX,myY);
   rotate(mynewR);
   triangle(40,0,-40,20,-40,-20);  
-  translate(-myX-40,-myY);
+  translate(-myX,-myY);
   popMatrix();
   textSize(100);
-  text(score,990,75);
+  text((int)(score),970,85);
 }
+
 
 
