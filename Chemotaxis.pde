@@ -12,7 +12,8 @@ float myV = 0;//magnitutde of ships velocity
 int[]highscore = new int[12]; //array to store highscores for levels
 boolean newscore = false;//if you got a new highscore
 class Cell {
-  int x, y, tint; //x coordinate, y coordinate, color
+  float x, y;
+  int tint; //x coordinate, y coordinate, color
   float xv, yv, s; //x velocity, y velocity, size
   boolean alive, infected; //if cell is alive, if cell is infected
   Cell(int ax, int ay, int as) { //initializes cell
@@ -20,8 +21,8 @@ class Cell {
     y=ay;
     s=as;
     tint=color(0, 0, (int)random(100, 300));
-    xv=random(-1, 1);
-    yv=random(-1, 1);
+    xv=random(-3, 3);
+    yv=random(-3, 3);
     alive=true;
     infected=false;
   }
@@ -62,11 +63,12 @@ class Cell {
     }
   }
   void move() {
-    //if(a<30){
-    //  x+=5;
-    //}else{
+    if(infected==false || level<2){
+    x+=random(-5, 5); //random walk
+    y+=random(-5, 5);
+    }else{
     xv+=random(-.3, .3); //random walk
-    yv+=random(-.3, .3);
+    yv+=random(-.3, .3); 
     x+=xv; //update x and y position
     y+=yv;
     if ((x>1100&&xv>0) || (x<0&&xv<0)) { //if hit boundaries, bounce back
@@ -80,6 +82,7 @@ class Cell {
     }
     if (abs(yv)>5) {
       yv*=.3;
+    }
     }
     if (myX>(x-(s/2)) && myX<(x+(s/2)) && myY>(y-(s/2)) && myY<(y+(s/2)) && abs(myV)>1) { //if ship hits cell, kill cell
       alive=false;
