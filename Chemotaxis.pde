@@ -20,7 +20,7 @@ class Cell {
     x=ax;
     y=ay;
     s=as;
-    tint=color(0, 0, (int)random(100, 300));
+    tint=color((int)random(50, 200), 0, (int)random(50, 200));
     xv=random(-3, 3);
     yv=random(-3, 3);
     alive=true;
@@ -67,7 +67,7 @@ class Cell {
     x+=random(-5, 5); //random walk
     y+=random(-5, 5);
     }else{
-    xv+=random(-.3, .3); //random walk
+    xv+=random(-.3, .3); //random float for infected
     yv+=random(-.3, .3); 
     x+=xv; //update x and y position
     y+=yv;
@@ -93,7 +93,7 @@ class Cell {
     }
     if (millis()-timer>3000 && started<level && random(1, 50)>48) { //infect some random cells at beginning of each game
       infected=true;
-      tint=color(200, 0, 50);
+      tint=color(0, 200, 50);
       started+=1;
     }
   }
@@ -144,7 +144,7 @@ void initgame() { //reset everything to initial values
 void draw() {
 
   if (level%2==1) { //if playing a level...
-    background((allcount-score)*6, 0, (score/allcount)*200); //clear frame
+    background((score/allcount)*100,(allcount-score)*6, (score/allcount)*200); //clear frame
     score=0;
     allcount=0;
     for (int i=0; i<80; i++) { //cycle through all cells
@@ -227,15 +227,7 @@ void draw() {
         fill(tinty2, 300-tinty, tinty);
         text("Hit Left to play again", 100, 600);
         text("Hit Right to Level Up", 500, 650);
-      } else {
-        textSize(200); //if you lost, show losing screen
-        fill(300, 0, 0);
-        text("Sorry", 250, 350);
-        textSize(75);
-        fill(0, 0, 0);
-        text("Hit Left to Try again", 200, 500);
-      }
-      if (keyPressed==true && keyCode==LEFT) { //control replaying and advancing to new level
+              if (keyPressed==true && keyCode==LEFT) { //control replaying and advancing to new level
         level-=1;
         initgame();
       }
@@ -243,6 +235,18 @@ void draw() {
         level+=1;
         initgame();
       }
+      } else {
+        textSize(200); //if you lost, show losing screen
+        fill(300, 0, 0);
+        text("Sorry", 250, 350);
+        textSize(75);
+        fill(0, 0, 0);
+        text("Hit Left to Try again", 200, 500);
+        if(keyPressed==true){
+          level-=1;
+        }
+      }
+
     }
   }
 }
